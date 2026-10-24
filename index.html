@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RitualBox prasad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Yatra+One&family=Mukta:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#fff3dc; --ink:#14224f; --soft:#4f5b86; --pink:#d92b78; --gold:#e8920a; --card:#ffffff;
+    --ring:rgba(232,146,10,.16);
+    color-scheme:light;
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --bg:#121c45; --ink:#fff3dc; --soft:#b3bbdc; --pink:#ff5fa8; --gold:#ffb21e; --card:#1c2a63;
+      --ring:rgba(255,178,30,.12); color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#121c45; --ink:#fff3dc; --soft:#b3bbdc; --pink:#ff5fa8; --gold:#ffb21e; --card:#1c2a63;
+    --ring:rgba(255,178,30,.12); color-scheme:dark;
+  }
+  *,*::before,*::after{box-sizing:inherit}
+  html,body{height:100%;margin:0}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Mukta",system-ui,-apple-system,"Segoe UI",sans-serif;
+    overflow:hidden; -webkit-tap-highlight-color:transparent;
+    background-image:repeating-radial-gradient(circle at 50% 118%, transparent 0 26px, var(--ring) 26px 28px);
+  }
+  header{
+    position:relative; z-index:3; text-align:center;
+    padding:clamp(28px,7vh,64px) 22px 0; max-width:30rem; margin:0 auto;
+  }
+  h1{
+    font-family:"Yatra One","Mukta",serif; font-weight:400;
+    font-size:clamp(2.4rem,11vw,3.6rem); line-height:1.05; margin:0 0 .35em;
+  }
+  .sub{font-size:1.2rem; line-height:1.45; color:var(--soft); margin:0}
+  .hint{font-size:.95rem; color:var(--soft); margin:.4em 0 0; opacity:.8}
+
+  .ladoo{
+    position:fixed; z-index:4; width:112px; height:112px; padding:0; border:0; background:none;
+    cursor:pointer; touch-action:manipulation; border-radius:50%;
+    transition:left .38s cubic-bezier(.3,1.5,.5,1), top .38s cubic-bezier(.3,1.5,.5,1), transform .25s;
+    animation:bob 2.4s ease-in-out infinite;
+  }
+  .ladoo svg{width:100%;height:100%;display:block;filter:drop-shadow(0 6px 10px rgba(0,0,0,.18))}
+  .ladoo:focus-visible{outline:3px solid var(--pink); outline-offset:6px}
+  .ladoo.pop{animation:pop .45s ease-in forwards}
+  .ladoo.settled{z-index:1; width:92px; height:92px; animation:peek .6s cubic-bezier(.3,1.5,.5,1) both; pointer-events:none}
+  @keyframes bob{50%{transform:translateY(-8px) rotate(-4deg)}}
+  @keyframes pop{30%{transform:scale(1.25)} 100%{transform:scale(0); opacity:0}}
+  @keyframes peek{from{transform:translateY(40px) scale(.4); opacity:0} to{transform:none; opacity:1}}
+
+  .taunt{
+    position:fixed; z-index:5; max-width:15rem; pointer-events:none;
+    background:var(--pink); color:#fff; font-weight:700; font-size:1.05rem;
+    padding:.45em .8em; border-radius:14px 14px 14px 4px;
+    opacity:0; transform:translateY(6px); transition:opacity .2s, transform .2s;
+  }
+  .taunt.show{opacity:1; transform:none}
+
+  .rain{position:fixed; inset:0; z-index:6; pointer-events:none; overflow:hidden}
+  .drop{position:absolute; top:-90px; animation:fall linear forwards}
+  .drop svg{width:100%;height:100%;display:block}
+  @keyframes fall{to{transform:translateY(calc(100vh + 140px)) rotate(var(--r))}}
+
+  .reveal{
+    position:fixed; z-index:2; left:50%; bottom:calc(env(safe-area-inset-bottom,0px) + 9vh);
+    transform:translate(-50%,30px); width:min(88vw,24rem); text-align:center;
+    opacity:0; pointer-events:none; transition:opacity .4s, transform .4s;
+  }
+  .reveal.show{opacity:1; transform:translate(-50%,0); pointer-events:auto}
+  .reveal h2{font-family:"Yatra One","Mukta",serif; font-weight:400; font-size:2.2rem; margin:0 0 .2em}
+  .reveal p{color:var(--soft); font-size:1.08rem; line-height:1.45; margin:0 0 1.2em}
+  .follow{
+    position:relative; z-index:2; display:block; text-decoration:none;
+    background:var(--pink); color:#fff; font-weight:700; font-size:1.2rem;
+    padding:1em 1.2em; border-radius:18px;
+    box-shadow:0 8px 0 color-mix(in srgb, var(--pink) 60%, #000);
+  }
+  .follow:active{transform:translateY(4px); box-shadow:0 4px 0 color-mix(in srgb, var(--pink) 60%, #000)}
+  .follow:focus-visible{outline:3px solid var(--gold); outline-offset:4px}
+  .count{margin-top:1em; font-size:.95rem; color:var(--soft)}
+
+  .skip{
+    position:fixed; z-index:3; left:0; right:0; bottom:calc(env(safe-area-inset-bottom,0px) + 14px);
+    text-align:center; font-size:.9rem;
+  }
+  .skip a{color:var(--soft)}
+  .skip.hide{display:none}
+
+  @media (prefers-reduced-motion:reduce){
+    .ladoo{animation:none; transition:none}
+    .reveal{transition:none}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>Prasad adhoora hai.</h1>
+  <p class="sub">Ladoo pakdo, poora karo.</p>
+  <p class="hint">Tap the ladoo.</p>
+</header>
+
+<button class="ladoo" id="ladoo" aria-label="Tap the ladoo"></button>
+<div class="taunt" id="taunt" aria-live="polite"></div>
+<div class="rain" id="rain" aria-hidden="true"></div>
+
+<section class="reveal" id="reveal" aria-live="polite">
+  <h2>Prasad poora hua.</h2>
+  <p>Aashirwad Instagram pe hai: aaj ka peak moment aur agle jam ki date.</p>
+  <a class="follow" id="follow" href="#">Instagram pe follow karo</a>
+  <div class="count" id="count"></div>
+</section>
+
+<div class="skip" id="skip"><a id="skipLink" href="#">Seedha Instagram kholo</a></div>
+
+<script>
+  // ===== Change this one line =====
+  const INSTA_HANDLE = "ritualbox";
+  // =================================
+  const INSTA_URL = "https://www.instagram.com/" + INSTA_HANDLE + "/?utm_source=prasad_qr&utm_medium=offline&utm_campaign=bhajan_jamming_vol1";
+
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ladoo = document.getElementById("ladoo");
+  const taunt = document.getElementById("taunt");
+  const rain = document.getElementById("rain");
+  const reveal = document.getElementById("reveal");
+  const follow = document.getElementById("follow");
+  const count = document.getElementById("count");
+  const skip = document.getElementById("skip");
+  follow.href = INSTA_URL;
+  document.getElementById("skipLink").href = INSTA_URL;
+
+  let uid = 0;
+  function ladooSVG(){
+    const id = "g" + (uid++);
+    const cols = ["#ffb627","#f59e16","#ffc94d","#e8880c","#ffd46e"];
+    let seed = 7 + uid * 13, dots = "";
+    const rnd = () => (seed = (seed * 9301 + 49297) % 233280) / 233280;
+    for (let i = 0; i < 80; i++){
+      const a = rnd() * Math.PI * 2, d = Math.sqrt(rnd()) * 39;
+      const x = 50 + Math.cos(a) * d, y = 50 + Math.sin(a) * d;
+      const shade = d > 30 ? .55 : .9;
+      dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(3 + rnd() * 1.6).toFixed(1)}" fill="${cols[i % cols.length]}" opacity="${shade}"/>`;
+    }
+    return `<svg viewBox="0 0 100 100" aria-hidden="true"><defs><radialGradient id="${id}" cx="38%" cy="34%" r="72%"><stop offset="0" stop-color="#ffd772"/><stop offset=".6" stop-color="#f39a12"/><stop offset="1" stop-color="#bf6608"/></radialGradient></defs><circle cx="50" cy="50" r="43" fill="url(#${id})"/>${dots}<ellipse cx="36" cy="32" rx="10" ry="7" fill="#fff" opacity=".28"/></svg>`;
+  }
+  ladoo.innerHTML = ladooSVG();
+
+  function place(x, y){ ladoo.style.left = x + "px"; ladoo.style.top = y + "px"; }
+  const size = () => ladoo.getBoundingClientRect().width || 112;
+  place(innerWidth / 2 - 56, innerHeight * 0.5 - 56);
+
+  const lines = ["Arre! Itna aasaan nahi.", "Thodi aur bhakti chahiye.", "Bas, ek aur baar."];
+  let taps = 0, done = false, tauntTimer;
+
+  function showTaunt(text, x, y){
+    taunt.textContent = text;
+    const left = Math.min(Math.max(12, x), innerWidth - 240);
+    taunt.style.left = left + "px";
+    taunt.style.top = Math.max(12, y - 52) + "px";
+    taunt.classList.add("show");
+    clearTimeout(tauntTimer);
+    tauntTimer = setTimeout(() => taunt.classList.remove("show"), 1100);
+  }
+
+  ladoo.addEventListener("click", () => {
+    if (done) return;
+    if (navigator.vibrate) navigator.vibrate(15);
+    if (taps < 3){
+      const s = size();
+      const minY = Math.max(innerHeight * 0.36, 210);
+      const x = 16 + Math.random() * (innerWidth - s - 32);
+      const y = minY + Math.random() * (innerHeight - minY - s - 60);
+      place(x, y);
+      showTaunt(lines[taps], x, y);
+      taps++;
+    } else {
+      burst();
+    }
+  });
+
+  function burst(){
+    done = true;
+    taunt.classList.remove("show");
+    skip.classList.add("hide");
+    ladoo.classList.add("pop");
+    if (!reduce){
+      for (let i = 0; i < 38; i++){
+        const d = document.createElement("div");
+        d.className = "drop";
+        const s = 34 + Math.random() * 34;
+        d.style.width = d.style.height = s + "px";
+        d.style.left = (Math.random() * (innerWidth - s)) + "px";
+        d.style.setProperty("--r", (Math.random() * 720 - 360) + "deg");
+        d.style.animationDuration = (1.1 + Math.random() * 0.9) + "s";
+        d.style.animationDelay = (Math.random() * 0.9) + "s";
+        d.innerHTML = ladooSVG();
+        rain.appendChild(d);
+      }
+      setTimeout(() => (rain.innerHTML = ""), 3200);
+    }
+    setTimeout(showReveal, reduce ? 200 : 1500);
+  }
+
+  function showReveal(){
+    reveal.classList.add("show");
+    // the ladoo hides behind the Instagram button, peeking over its top edge
+    setTimeout(() => {
+      const r = follow.getBoundingClientRect();
+      ladoo.classList.remove("pop");
+      ladoo.classList.add("settled");
+      place(r.right - 104, r.top - 52);
+      ladoo.style.transition = "none";
+    }, 350);
+    let n = 5;
+    const tick = () => {
+      if (n === 0){ count.textContent = "Instagram khul raha hai…"; location.assign(INSTA_URL); return; }
+      count.textContent = n + " second mein Instagram khulega";
+      n--; setTimeout(tick, 1000);
+    };
+    tick();
+  }
+
+  addEventListener("resize", () => {
+    if (!done) return;
+    const r = follow.getBoundingClientRect();
+    place(r.right - 104, r.top - 52);
+  });
+</script>
+</body>
+</html>
